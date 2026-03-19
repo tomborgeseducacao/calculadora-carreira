@@ -750,7 +750,7 @@
 // ─────────────────────────────────────────────
 // CONFIGURAÇÃO — substitua pela sua URL do Apps Script
 // ─────────────────────────────────────────────
-const SHEET_WEBHOOK = 'SUA_URL_DO_APPS_SCRIPT_AQUI';
+const SHEET_WEBHOOK = 'https://script.google.com/macros/s/AKfycbyt9ad4R5lftM5wcVyIcFLc3vV4pdj_vQqwX4ZSeuJbGUsBh44IROYafqoqN-LuA1We/exec';
 // Instruções para obter esta URL estão no bloco de comentários ao final do arquivo.
 
 // ─────────────────────────────────────────────
@@ -792,14 +792,27 @@ function setBar(id, pct) {
 async function salvarNaSheet(evento) {
   if (!SHEET_WEBHOOK || SHEET_WEBHOOK === 'SUA_URL_DO_APPS_SCRIPT_AQUI') return;
 
-  const payload = { ...dadosSimulacao, evento, timestamp: new Date().toISOString() };
+  const d = dadosSimulacao;
+  const params = new URLSearchParams({
+    evento:             evento,
+    timestamp:          new Date().toISOString(),
+    nome:               d.nome               || '',
+    whatsapp:           d.whatsapp           || '',
+    curso:              d.curso              || '',
+    salarioAtual:       d.salarioAtual       || '',
+    investimento:       d.investimento       || '',
+    acrescimo:          d.acrescimo          || '',
+    salarioComMestrado: d.salarioComMestrado || '',
+    payback:            d.payback            || '',
+    opp10:              d.opp10              || '',
+    opp20:              d.opp20              || '',
+    opp30:              d.opp30              || ''
+  });
 
   try {
-    await fetch(SHEET_WEBHOOK, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+    await fetch(SHEET_WEBHOOK + '?' + params.toString(), {
+      method: 'GET',
+      mode: 'no-cors'
     });
   } catch (e) {
     console.warn('Não foi possível salvar:', e);
@@ -990,7 +1003,7 @@ PASSO 3 — Publique como Web App
   • Clique em "Implantar" e copie a URL gerada
 
 PASSO 4 — Cole a URL neste arquivo
-  • Procure a linha:  const SHEET_WEBHOOK = 'SUA_URL_DO_APPS_SCRIPT_AQUI';
+  • Procure a linha:  const SHEET_WEBHOOK = 'https://script.google.com/macros/s/AKfycbyt9ad4R5lftM5wcVyIcFLc3vV4pdj_vQqwX4ZSeuJbGUsBh44IROYafqoqN-LuA1We/exec';
   • Substitua pelo valor copiado no passo anterior.
   • Salve e publique o HTML.
 
